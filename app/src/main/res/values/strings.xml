@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">JokeMachine</string>
+    <string name="submit_joke">Submit Joke</string>
+    <string name="action_home">Home</string>
+    <string name="action_submit">Submit Joke?</string>
+    <string name="action_contact">Contact Me!</string>
+    <string name="action_about"> Aboot Me!</string>
+    <string name="empty"> </string>
+    <string name="first"> Do you want a joke Ammi? </string>
+    <string name="second"> Then tap that! </string>
+    <string name="oneLiner"> Tap Me For A One Liner! </string>
+    <string name="joke"> Tap Me For A Joke! </string>
+    <string name="aww"> Wanna go aww?</string>
+    <string name="submit_instruction"> So you want to submit a joke eh? First, make sure yo phone is connected to the internet (duh). Secondly, you CANNOT submit one liners, also, make sure the joke is split into two parts. Lastly, if I do not laugh at the joke, then I am deleting it.</string>
+    <string name="submit_hint_one"> First part of the joke</string>
+    <string name="submit_hint_second"> Second part of the joke</string>
+    <string name="submit_button">Submit joke</string>
+    <string name="message_box_title">Title</string>
+    <string name="message_timesheet_not_up_to_date">Something</string>
+</resources>
