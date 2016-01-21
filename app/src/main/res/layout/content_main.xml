@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/first"
+            android:textIsSelectable="true"
             android:id="@+id/first"
             android:gravity="center_horizontal" />
 
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:textIsSelectable="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/second"
             android:id="@+id/second"

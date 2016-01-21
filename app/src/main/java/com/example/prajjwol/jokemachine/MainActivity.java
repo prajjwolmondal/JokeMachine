@@ -2,17 +2,14 @@ package com.example.prajjwol.jokemachine;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -23,17 +20,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.Parse;
 import com.parse.ParseQuery;
-import java.util.ArrayList;
 import java.util.Collections;
 
 
@@ -59,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
 //        });
         //showNotification(false);
         //handleNotification();
-        scheduleNotification(getNotification(generateNiceMessage()), 3000);
+        scheduleNotification(getNotification(generateNiceMessage()), getTime());
+    }
+
+    public int getTime(){
+        int[] possibleTimes = {14400000,10800000,7200000,3600000,2700000,1800000};
+        return possibleTimes[returnRand(possibleTimes.length)];
     }
 
     private Notification getNotification(String content) {

@@ -63,9 +63,7 @@ public class SubmitJoke extends AppCompatActivity {
                 sendEmail();
                 return true;
             case R.id.action_aboot:
-                Intent startAboot = new Intent(this, About.class);
-                startActivity(startAboot);
-                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
