@@ -35,7 +35,7 @@
             android:id="@+id/button"
             android:onClick="createOneLiners"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="80dp"/>
+            android:layout_marginTop="90dp"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -45,15 +45,22 @@
             android:id="@+id/button2"
             android:onClick="createJokes"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="50dp" />
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/aww"
-            android:id="@+id/button3"
-            android:onClick="openAww"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="10000dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/wtf"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10000dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/love"/>
+
     </LinearLayout>
 </ScrollView>

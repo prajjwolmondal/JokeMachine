@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,12 +23,19 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.Parse;
 import com.parse.ParseQuery;
+import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,43 +57,73 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-        showNotification();
+        //showNotification(false);
+        //handleNotification();
+        scheduleNotification(getNotification(generateNiceMessage()), 3000);
     }
 
-    private void handleNotification() {
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5000, pendingIntent);
+    private Notification getNotification(String content) {
+//        Notification.Builder builder = new Notification.Builder(this);
+//        builder.setContentTitle(content);
+//        builder.setSmallIcon(R.drawable.ic_launcher);
+//        builder.setAutoCancel(true);
+//        builder.setPriority(Notification.PRIORITY_LOW);
+//        builder.setVibrate(new long[]{1500, 1000, 500}).build();
+//        return builder.build();
+//
+        Notification.Builder builder =
+                new Notification.Builder(this)
+                        .setContentTitle("Compliment Time!")
+                        .setContentText(content)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setAutoCancel(true)
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .setStyle(new Notification.BigTextStyle()
+                                .bigText(content));
+
+        builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).build();
+        builder.setLights(Color.RED, 2000, 5000);
+        return builder.build();
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
     public String generateNiceMessage(){
-        String[] messages = {"You're soo fucking beautiful!","You're ammizing!","I Love You Sooooooo Much","Your smile brightens the world", "Is this getting annoying?","Damn girl!! You look stunning!","You smell amaaazing!","If looks could kill, you'd be a mass murderer"};
+        String[] messages = {"You're soo fucking beautiful!","You're ammizing!","I Love You Sooooooo Much","Your smile brightens the world", "Is this getting annoying?","Damn girl!! You look stunning!","You smell amaaazing!","If looks could kill, you'd be a mass murderer","<Insert cheesy yet funny comment about how beautiful Ammi looks>","I'm betting that right now I'm thinking about how beautiful you are naked","You in that outfit, is the cure for depression","YOU have the CUTEST smile and laugh :D","Your eyes are BEA-UU-TIFUL. They look like caramel covered candy.","You're such an adorable and cute butt!","You're stunningly sexy as fuck!","Your reporting skills are so rad!","How much are you digging these?","You're one of the most interesting person I've ever known","I love thhudasasodnwsadasqw. Damn, looks like I had an Ammi stroke!"};
         int len = messages.length;
         int rand = returnRand(len);
         return messages[rand];
-
     }
-
-    public void showNotification(){
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        Context context = getApplicationContext();
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
-        String message = generateNiceMessage();
-        Notification notification = new NotificationCompat.Builder(this)
-                //.setCategory(Notification.CATEGORY_PROMO)
-                .setContentTitle(message)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setAutoCancel(true)
-                //.addAction(android.R.drawable.ic_menu_view, "View details", contentIntent)
-                .setContentIntent(contentIntent)
-                .setPriority(Notification.PRIORITY_LOW)
-                .setVibrate(new long[]{1000, 1000}).build();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(001, notification);
-    }
+//
+//    public void showNotification(){
+//        Context context = getApplicationContext();
+//        Intent notificationIntent = new Intent(context, MainActivity.class);
+//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+//                notificationIntent, 0);
+//        String message = generateNiceMessage();
+//        Notification notification = new NotificationCompat.Builder(this)
+//                //.setCategory(Notification.CATEGORY_PROMO)
+//                .setContentTitle(message)
+//                .setSmallIcon(R.drawable.ic_launcher)
+//                .setAutoCancel(true)
+//                //.addAction(android.R.drawable.ic_menu_view, "View details", contentIntent)
+//                //.setContentIntent(contentIntent)
+//                .setPriority(Notification.PRIORITY_LOW)
+//                .setVibrate(new long[]{1000, 1000}).build();
+//        NotificationManager notificationManager =
+//                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        notificationManager.notify(001, notification);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-             case R.id.action_home:
+            case R.id.action_home:
                 return true;
             case R.id.action_submit:
                 Intent startSubmitJoke = new Intent(this, SubmitJoke.class);
@@ -104,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_contact:
                 sendEmail();
+                return true;
+            case R.id.action_aboot:
+                Intent startAboot = new Intent(this, About.class);
+                startActivity(startAboot);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -113,25 +156,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int returnRand(int max){
-        Random rn = new Random();
-        int min = 0;
-        return rn.nextInt(max - min + 1) + min;
+    public int returnRand(int max) {
+//        Random rn = new Random();
+//        int min = 0;
+//        return rn.nextInt(max - min + 1) + min;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i=1; i<max; i++) {
+            list.add(new Integer(i));
+        }
+        Collections.shuffle(list);
+        Collections.shuffle(list);
+        return list.get(0);
+
     }
 
-    public void sendEmail(){
+    public void sendEmail() {
         /* Create the Intent */
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        final Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
         /* Fill it with Data */
         emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"prajj.mondal@gmail.com"});
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Contacting Supreme and Most Awesome Dev for JokeMachine");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"prajj.mondal@gmail.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Contacting Supreme and Most Awesome Dev for JokeMachine");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Dear Awesome and Sexy Dev, \n \n \n Your Gorgeous Girlfriend, \n Annoying Ammi");
 
 
         /* Send it off to the Activity-Chooser */
-                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     @Override
@@ -179,9 +230,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-        else{
-            String[] firstPart = {"I told them I wanted to be a comedian, and they laughed; then I became a comedian, no one's laughing now","Procrastination: working tomorrow for a better today.","No matter how good I get at tennis, I will never be better than a wall.","I love the word frequently, and I try to use it as much as possible.", "You can't trust atoms, they make up everything.","I don't mean to brag, but I'm 2 girls away from a threesome.","I shouldn't have driven home last night... Especially since i walked to the bar..","I want to die peacefully in my sleep like my grandfather, not screaming in terror like his passengers.","If I ever saw an amputee being hanged, I'd just start calling out letters."," I used to be indecisive but now I'm not sure.","\"I'm sorry\" and \"I apologize\" mean the same thing unless you're at a funeral.","Last night I was playing poker with Tarot cards, I got a full house and four people died.","I Love You Gorgeous","I don't hold grudges, my father did and I always hated him for it","I saw a sign that said \"watch for children\" and I thought, \"That sounds like a fair trade","I hate Russian dolls, they're so full of themselves.","A recent survey showed that 6 out of 7 dwarfs are not happy.","The easiest time to add insult to injury is when you’re signing somebody’s cast.","Two antennas meet on a roof and fall in love; the wedding wasn't much but the reception was excellent.","There are only two hard things in Computer Science: cache invalidation, naming things, and off-by-one errors."};
+        } else {
+            String[] firstPart = {"I told them I wanted to be a comedian, and they laughed; then I became a comedian, no one's laughing now", "Procrastination: working tomorrow for a better today.", "No matter how good I get at tennis, I will never be better than a wall.", "I love the word frequently, and I try to use it as much as possible.", "You can't trust atoms, they make up everything.", "I don't mean to brag, but I'm 2 girls away from a threesome.", "I shouldn't have driven home last night... Especially since i walked to the bar..", "I want to die peacefully in my sleep like my grandfather, not screaming in terror like his passengers.", "If I ever saw an amputee being hanged, I'd just start calling out letters.", " I used to be indecisive but now I'm not sure.", "\"I'm sorry\" and \"I apologize\" mean the same thing unless you're at a funeral.", "Last night I was playing poker with Tarot cards, I got a full house and four people died.", "I Love You Gorgeous", "I don't hold grudges, my father did and I always hated him for it", "I saw a sign that said \"watch for children\" and I thought, \"That sounds like a fair trade", "I hate Russian dolls, they're so full of themselves.", "A recent survey showed that 6 out of 7 dwarfs are not happy.", "The easiest time to add insult to injury is when you’re signing somebody’s cast.", "Two antennas meet on a roof and fall in love; the wedding wasn't much but the reception was excellent.", "There are only two hard things in Computer Science: cache invalidation, naming things, and off-by-one errors."};
             int l = firstPart.length;
             int randomInt = returnRand(l);
             TextView first = (TextView) findViewById(R.id.first);
@@ -216,8 +266,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            String[] firstPart = {"One morning I shot an elephant in my pajamas.","And The Lord said unto John, \"Come forth and receive eternal life.\"","If you build a man a fire you keep him warm for a day.","Give a man a fish, and feed him for a day. Don't teach a man to fish, feed yourself. He's a grown man, fishing's not that hard.","I had a threesome last night.","Having sex is like playing bridge.","I was walking in the park and this guy waved at me. Then he said, 'I'm sorry, I thought you were someone else.'","What's Al Qaeda's favorite football team?","I wanted to buy a candleholder, but the store didn't have one.","Is my girlfriend disappointed with our sex life?","I've never killed a man, but I've read many an obituary with a great deal of satisfaction.","All I've ever wanted was an honest week's pay for an honest day's work.","Why don't blind people skydive?","How do you spot a blind guy at a nude beach?","A bear and a rabbit are taking a shit in the woods. The bear turns to the rabbit and asks, \"Do you have problems with shit sticking to your fur?\" And the rabbit replies, \"No, I don't.\" ","My two lesbian neighbours got me a Rolex for my birthday. ","What did the egg say to the boiling pot of water?","A Drunk man walks into a bar, goes up to the bartender and shouts, \"I FUCKED YOUR MOM LAST NIGHT!\"","Why does Santa have such a large sack?","Why doesn't Santa have any of his own children?","A logician's wife is having a baby. The doctor immediately hands the newborn to the dad. His wife asks impatiently: \"So, is it a boy or a girl\" ?","I told my girlfriend she drew her eyebrows too high.","Why are moon rocks better to eat than Earth rocks?","I have an EpiPen.","If I got $1 every time somebody called me a racist","How many Germans does it take to change a light bulb?"};
-            String[] secondPart = {"How he got into my pajamas I'll never know.","But John came in fifth and won a toaster.","If you set a man on fire you keep him warm for the rest of his life.","- Ron Swanson.","There were a couple of no-shows, but I enjoyed myself anyway.","If you don't have a good partner, you'd better have a good hand.","I said, 'I am.'","The New York Jets.","So I bought a cake.","A tiny part of me says yes.","- Mark Twain","-Steve Martin","It scares the hell out of the dog.","Its not hard.","So the bear wipes his ass with the rabbit."," They misunderstood when I said \"I wanna watch.\"","You expect for me to get hard? I just got laid!","The bartender responds, \"Go home, Dad.\""," Because he only comes once a year!","Because he only comes once a year and it's down the chimney.","The logician replies: \"yes\".","She seemed surprised.","Because, they're a little meteor.","My friend gave it to me as he was dying. It seemed very important to him that I have it.","black people would rob me","One. They are efficient and don't have humour."};
+            String[] firstPart = {"One morning I shot an elephant in my pajamas.", "And The Lord said unto John, \"Come forth and receive eternal life.\"", "If you build a man a fire you keep him warm for a day.", "Give a man a fish, and feed him for a day. Don't teach a man to fish, feed yourself. He's a grown man, fishing's not that hard.", "I had a threesome last night.", "Having sex is like playing bridge.", "I was walking in the park and this guy waved at me. Then he said, 'I'm sorry, I thought you were someone else.'", "What's Al Qaeda's favorite football team?", "I wanted to buy a candleholder, but the store didn't have one.", "Is my girlfriend disappointed with our sex life?", "I've never killed a man, but I've read many an obituary with a great deal of satisfaction.", "All I've ever wanted was an honest week's pay for an honest day's work.", "Why don't blind people skydive?", "How do you spot a blind guy at a nude beach?", "A bear and a rabbit are taking a shit in the woods. The bear turns to the rabbit and asks, \"Do you have problems with shit sticking to your fur?\" And the rabbit replies, \"No, I don't.\" ", "My two lesbian neighbours got me a Rolex for my birthday. ", "What did the egg say to the boiling pot of water?", "A Drunk man walks into a bar, goes up to the bartender and shouts, \"I FUCKED YOUR MOM LAST NIGHT!\"", "Why does Santa have such a large sack?", "Why doesn't Santa have any of his own children?", "A logician's wife is having a baby. The doctor immediately hands the newborn to the dad. His wife asks impatiently: \"So, is it a boy or a girl\" ?", "I told my girlfriend she drew her eyebrows too high.", "Why are moon rocks better to eat than Earth rocks?", "I have an EpiPen.", "If I got $1 every time somebody called me a racist", "How many Germans does it take to change a light bulb?"};
+            String[] secondPart = {"How he got into my pajamas I'll never know.", "But John came in fifth and won a toaster.", "If you set a man on fire you keep him warm for the rest of his life.", "- Ron Swanson.", "There were a couple of no-shows, but I enjoyed myself anyway.", "If you don't have a good partner, you'd better have a good hand.", "I said, 'I am.'", "The New York Jets.", "So I bought a cake.", "A tiny part of me says yes.", "- Mark Twain", "-Steve Martin", "It scares the hell out of the dog.", "Its not hard.", "So the bear wipes his ass with the rabbit.", " They misunderstood when I said \"I wanna watch.\"", "You expect for me to get hard? I just got laid!", "The bartender responds, \"Go home, Dad.\"", " Because he only comes once a year!", "Because he only comes once a year and it's down the chimney.", "The logician replies: \"yes\".", "She seemed surprised.", "Because, they're a little meteor.", "My friend gave it to me as he was dying. It seemed very important to him that I have it.", "black people would rob me", "One. They are efficient and don't have humour."};
             int l = firstPart.length;
             int randomInt = returnRand(l);
             TextView first = (TextView) findViewById(R.id.first);
@@ -227,29 +277,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openAww(View view){
-        if (isNetworkAvailable()) {
-            ParseObject testObject = new ParseObject("UserInfoLog");
-            testObject.put("Button", "Aww");
-            testObject.saveInBackground();
-            String[] url = {"http://www.imagoid.com/r/aww/top", "http://www.redditery.com/r/aww", "http://reddpics.com/r/aww/", "http://www.liveanimals.tv/dogs-and-puppies/", "http://www.apl.tv/puppies.htm", "http://livepuppycam.com/"};
-            int l = url.length;
-            int randomInt = returnRand(l);
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url[randomInt]));
-            startActivity(i);
-        }
-        else{
-            TextView first = (TextView) findViewById(R.id.first);
-            first.setText("Not connected to the Internet, Gorgeous!");
-        }
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 }
