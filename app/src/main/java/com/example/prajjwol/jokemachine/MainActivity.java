@@ -36,29 +36,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         Parse.initialize(this, "zFInIZhEujXzHdJQJVGLwIuRReS5IQTaVxgEdSnQ", "qtZs3raRUVNjJIGlJq6lS59Q7s3WNvgAkqNfhLSo");
-
-        // LOOK IN activity_main for corresponding code
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        //showNotification(false);
-        //handleNotification();
-        scheduleNotification(getNotification(generateNiceMessage()), getTime());
+        scheduleNotification(getNotification(generateNiceMessage(),"Compliment Time!"), getTime());
     }
 
+//    public void onResume(){
+//        super.onResume(); // Always call the superclass method first
+//        scheduleNotification(getNotification("",welcomeMessage()), 3000);
+//    }
+//
+//    public String welcomeMessage(){
+//        String[] messages = {"Welcome back boss!", "It's good to see you back again!!","I'm here to please you ;-)","Welcome back to the app, Ammi","Thank god it's you, and not Prajjwol.","Hey baby, I'm digging that outfit ;)","You back to push my buttons?"};
+//        int rand = returnRand(messages.length);
+//        return messages[rand];
+//    }
+
     public int getTime(){
-        int[] possibleTimes = {14400000,10800000,7200000,3600000,2700000,1800000};
+        int[] possibleTimes = {14400000,10800000,7200000,3600000,2700000,1800000,900000,300000,60000,30000};
         return possibleTimes[returnRand(possibleTimes.length)];
     }
 
-    private Notification getNotification(String content) {
+    private Notification getNotification(String content,String title) {
 //        Notification.Builder builder = new Notification.Builder(this);
 //        builder.setContentTitle(content);
 //        builder.setSmallIcon(R.drawable.ic_launcher);
@@ -69,15 +67,15 @@ public class MainActivity extends AppCompatActivity {
 //
         Notification.Builder builder =
                 new Notification.Builder(this)
-                        .setContentTitle("Compliment Time!")
+                        .setContentTitle(title)
                         .setContentText(content)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.notification_icon)
                         .setAutoCancel(true)
                         .setPriority(Notification.PRIORITY_LOW)
                         .setStyle(new Notification.BigTextStyle()
                                 .bigText(content));
 
-        builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }).build();
+        builder.setVibrate(new long[] { 1000, 1000 }).build();
         builder.setLights(Color.RED, 2000, 5000);
         return builder.build();
     }
@@ -95,31 +93,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String generateNiceMessage(){
-        String[] messages = {"You're soo fucking beautiful!","You're ammizing!","I Love You Sooooooo Much","Your smile brightens the world", "Is this getting annoying?","Damn girl!! You look stunning!","You smell amaaazing!","If looks could kill, you'd be a mass murderer","<Insert cheesy yet funny comment about how beautiful Ammi looks>","I'm betting that right now I'm thinking about how beautiful you are naked","You in that outfit, is the cure for depression","YOU have the CUTEST smile and laugh :D","Your eyes are BEA-UU-TIFUL. They look like caramel covered candy.","You're such an adorable and cute butt!","You're stunningly sexy as fuck!","Your reporting skills are so rad!","How much are you digging these?","You're one of the most interesting person I've ever known","I love thhudasasodnwsadasqw. Damn, looks like I had an Ammi stroke!"};
+        String[] messages = {"Is eveybody from Kenya as awesome as you??","You're so cute that puppies and kittens send pictures of you to each other.\n","You're soo fucking beautiful!","You're just too insanely loveable!! <3","You are the best kisser in the world!","Hahaha gotcha :P","You're the strongest and kindest woman I know :)","Aaammmmiiiiiiiii","....Error...Can't process...how breathtakingly gorgeous you are...","Your hair makes you so look much more attractive and sexier.","You make that dress look sooo good","Steve Harvey was supposed to say your name, but he fucked up!","I'm positive that the girl who walked past you got jealous of how sexy you look","You're ammizing!","I Love You Sooooooo Much","Your smile brightens the world", "Is this getting annoying?","Damn girl!! You look stunning!","You smell amaaazing!","If looks could kill, you'd be a mass murderer","<Insert cheesy yet funny comment about how beautiful Ammi looks>","I'm betting that right now I'm thinking about how beautiful you are naked","You in that outfit, is the cure for depression","YOU have the CUTEST smile and laugh :D","Your eyes are BEA-UU-TIFUL. They look like caramel covered candy.","You're such an adorable and cute butt!","You're stunningly sexy as fuck!","Your reporting skills are so rad!","How much are you digging these?","You're one of the most interesting person I've ever known","I love thhudasasodnwsadasqw. Damn, looks like I had an Ammi stroke!","BOOOOOOOOOBSS"};
         int len = messages.length;
         int rand = returnRand(len);
         return messages[rand];
     }
-//
-//    public void showNotification(){
-//        Context context = getApplicationContext();
-//        Intent notificationIntent = new Intent(context, MainActivity.class);
-//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-//                notificationIntent, 0);
-//        String message = generateNiceMessage();
-//        Notification notification = new NotificationCompat.Builder(this)
-//                //.setCategory(Notification.CATEGORY_PROMO)
-//                .setContentTitle(message)
-//                .setSmallIcon(R.drawable.ic_launcher)
-//                .setAutoCancel(true)
-//                //.addAction(android.R.drawable.ic_menu_view, "View details", contentIntent)
-//                //.setContentIntent(contentIntent)
-//                .setPriority(Notification.PRIORITY_LOW)
-//                .setVibrate(new long[]{1000, 1000}).build();
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//        notificationManager.notify(001, notification);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         for (int i=1; i<max; i++) {
             list.add(new Integer(i));
         }
+        // Shuffling it three times. There's no mathematical or logical reason for shuffling it 3 times.
+        Collections.shuffle(list);
         Collections.shuffle(list);
         Collections.shuffle(list);
         return list.get(0);
